@@ -1,6 +1,5 @@
 import pygame
 import sys
-from socket import AF_INET, socket, SOCK_STREAM
 import numpy as np
 from triangulos import Triangulo
 from bolas import Bola
@@ -9,6 +8,10 @@ from digitacaodotexto import TextoEntrada
 from Botao import Botao
 import random
 
+
+
+name = input("Digite o seu nome:")
+# name = "Pedroo"
 
 preto = (0, 0, 0, 255)
 roxo = (128, 0, 128, 255)
@@ -42,6 +45,12 @@ def enviar_mensagem(input, jogador_atual):
     pygame.display.flip()
     caixa_chat.adiciona_texto(jogador_atual, input)
     caixa_chat.atualiza_tela_chatarray(jogador_atual)
+
+
+def acao(message):
+    print(message)
+    return message.split()[0]
+
 
 def sorteio():
     numero_sorteado = random.randint(0, 100)
@@ -437,8 +446,10 @@ while not done:
     for event in pygame.event.get():  # User did something
         if event.type == pygame.QUIT:  # If user clicked close
             if minhas_pecas == "vermelho":
+                #send("PGANHOU", client_socket)
                 done = True  # Flag that we are done so we exit this loop
             elif minhas_pecas == "preto":
+                #send("VGANHOU", client_socket)
                 done = True
         if event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == MOUSE_LEFT:
@@ -446,7 +457,7 @@ while not done:
                     minhas_pecas = "vermelho"
                     pecas_jogador = "vermelho"
                     botao_cor_cinza_rect = botao_cor_cinza.desenha_botao(screen, 650, 680, 100, 50)
-                    botao_cor_cinza_rect = botao_cor_cinza.desenha_botao(screen, 850, 680, 100, 50)
+                     botao_cor_cinza_rect = botao_cor_cinza.desenha_botao(screen, 850, 680, 100, 50)
                     pygame.display.flip()
                     botao_esconde_texto_rect = botao_esconde_texto.desenha_botao(screen, 500, 600, 400, 100)
                     botao_resetar_partida_rect = botao_resetar_partida.desenha_botao(screen, 700, 680, 200, 50)
@@ -458,11 +469,9 @@ while not done:
                         vez_de = "vermelho"
                         pygame.draw.circle(screen, vermelho, (175, 25), 15)
 
-
                     elif sort < 50:
                         vez_de = "preto"
                         pygame.draw.circle(screen, preto, (175, 25), 15)
-
 
                     tabuleiro.desenha_tabuleiro(screen)
                     pygame.display.flip()
