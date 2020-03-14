@@ -15,7 +15,7 @@ azul = (0, 0, 255, 255)
 overmelhovenceu = pygame.image.load("Vitoria_do_Vermelho.jpg")
 opretovenceu = pygame.image.load("Vitoria_do_Preto.jpg")
 
-def verifica_dentro_do_circulo(self, x, y, a, b, r):
+def verifica_dentro_do_circulo(x, y, a, b, r):
     return (x - a) * (x - a) + (y - b) * (y - b) < r * r
 
 class Tabuleiro():

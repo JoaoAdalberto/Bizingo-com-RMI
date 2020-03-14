@@ -1,4 +1,13 @@
 import Pyro4
+import random
+
+
+def sorteio():
+    numero_sorteado = random.randint(0, 100)
+    if numero_sorteado > 50:
+        return "vermelho"
+    elif numero_sorteado < 50:
+        return "preto"
 
 
 @Pyro4.expose  # Disponibiliza o acesso remoto
@@ -6,6 +15,24 @@ import Pyro4
 class Servidor():
     def __init__(self):
         self.lista_players = []
+        self.vez_de = sorteio()
+        self.pegou_vermelho = False
+        self.pegou_preto = False
+
+    def get_vez_de(self):
+        return self.vez_de
+
+    def troca_jogador(self):
+        if self.vez_de == "vermelho":
+            self.vez_de = "preto"
+        elif self.vez_de == "preto":
+            self.vez_de = "vermelho"
+
+    def get_pegou_vermelho(self):
+        return self.pegou_vermelho
+
+    def get_pegou_preto(self):
+        return self.pegou_vermelho
 
     def add_player(self, cliente):
         self.lista_players.append(cliente)
