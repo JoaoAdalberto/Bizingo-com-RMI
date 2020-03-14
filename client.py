@@ -52,6 +52,19 @@ class cliente():
     def atualiza_chat(self):
         enviar_mensagem()
 
+    def escolheu_cor(self, cor):
+        print("entreiaqui4")
+        print(cor + "alo")
+        if cor == "vermelho":
+            print("SouPreto, Escondo botao vermelho")
+            botao_cor_cinza_rect = botao_cor_cinza.desenha_botao(screen, 850, 680, 100, 50)
+            pygame.display.flip()
+        elif cor == "preto":
+            print("SouVermelho, Escondo botao Preto")
+            botao_cor_cinza_rect = botao_cor_cinza.desenha_botao(screen, 650, 680, 100, 50)
+            pygame.display.flip()
+
+
 
 def text_objects(text, font, cor):
     textSurface = font.render(text, True, cor)
@@ -148,6 +161,22 @@ def sorteio():
     return numero_sorteado
 
 
+def esconde_botao_vermelho():
+    botao_cor_cinza_rect = botao_cor_cinza.desenha_botao(screen, 650, 680, 100, 50)
+    botao_cor_cinza_rect = botao_cor_cinza.desenha_botao(screen, 850, 680, 100, 50)
+    pygame.display.flip()
+    botao_esconde_texto_rect = botao_esconde_texto.desenha_botao(screen, 500, 600, 400, 100)
+    botao_resetar_partida_rect = botao_resetar_partida.desenha_botao(screen, 700, 680, 200, 50)
+
+
+def esconde_botao_preto():
+    botao_cor_cinza_rect = botao_cor_cinza.desenha_botao(screen, 850, 680, 100, 50)
+    botao_cor_cinza_rect = botao_cor_cinza.desenha_botao(screen, 650, 680, 100, 50)
+    botao_esconde_texto_rect = botao_esconde_texto.desenha_botao(screen, 500, 600, 500, 200)
+    botao_resetar_partida_rect = botao_resetar_partida.desenha_botao(screen, 700, 680, 200, 50)
+    pygame.display.flip()
+
+
 def resetar_partida():
     tabuleiro.teste()
     caixa_chat = CaixaChat(screen, 500, 80, 600, 350, brancola)
@@ -158,6 +187,9 @@ def resetar_partida():
 def rodar():
     global circulos, input_para_caixa_do_chat, minhas_pecas, vez_de, botao_resetar_partida_rect, botao_cor_cinza_rect, botao_esconde_texto_rect
     done = False
+    bloqueia_cor = True
+    pegouvermelho = False
+    pegoupreto = False
     vez_de = server.get_vez_de()
     if vez_de == "preto":
         pygame.draw.circle(screen, preto, (175, 25), 15)
@@ -169,37 +201,45 @@ def rodar():
                 caixa_chat.atualiza_tela_chatarray()
             except:
                 pass
-            # if event.type == pygame.MOUSEMOTION:
-            #     if not server.get_pegou_vermelho:
-            #         print("to passando aqui")
-            #             # botao_cor_cinza_rect = botao_cor_cinza.desenha_botao(screen, 650, 680, 100, 50)
-            #             # botao_cor_cinza_rect = botao_cor_cinza.desenha_botao(screen, 850, 680, 100, 50)
-            #             # pygame.display.flip()
-            #             # botao_esconde_texto_rect = botao_esconde_texto.desenha_botao(screen, 500, 600, 400, 100)
-            #             # botao_resetar_partida_rect = botao_resetar_partida.desenha_botao(screen, 700, 680, 200, 50)
-            #     elif not server.get_pegou_preto:
-            #         print("to passando AKI")
-            #         # botao_cor_cinza_rect = botao_cor_cinza.desenha_botao(screen, 850, 680, 100, 50)
-            #         # botao_cor_cinza_rect = botao_cor_cinza.desenha_botao(screen, 650, 680, 100, 50)
-            #         # botao_esconde_texto_rect = botao_esconde_texto.desenha_botao(screen, 500, 600, 500, 200)
-            #         # botao_resetar_partida_rect = botao_resetar_partida.desenha_botao(screen, 700, 680, 200, 50)
+            if not bloqueia_cor:
+                if event.type == pygame.MOUSEMOTION:
+                    if server.get_pegou_vermelho:
+                        print("Peguei vermelho buceta")
+                        esconde_botao_vermelho()
+                        bloqueia_cor = True
+                        pegouvermelho = False
+                    elif server.get_pegou_preto and pegoupreto:
+                        print("Peguei preto buceta")
+                        esconde_botao_preto()
+                        pegoupreto = False
+                        bloqueia_cor = True
             if event.type == pygame.QUIT:  # If user clicked close
                 done = True
                 server.del_player(cliente)
+                if cliente.get_minhas_pecas() == "vermelho":
+                    server.set_pegou_vermelho()
+                if cliente.get_minhas_pecas() == "preto":
+                    server.set_pegou_preto()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == MOUSE_LEFT:
                     if botao_cor_vermelho_rect.collidepoint(event.pos) and minhas_pecas != "preto":
                         minhas_pecas = "vermelho"
                         cliente.set_minhas_pecas("vermelho")
+                        server.set_pegou_vermelho()
+                        server.adversario_escolha_cor(cliente.get_nome(), "preto")
+                        print(server.get_pegou_vermelho())
+                        esconde_botao_vermelho()
                         message_display(150, 750, "JOGADOR VERMELHO ", 20, (255, 0, 0, 255))
                         tabuleiro.desenha_tabuleiro(screen)
-                        print(vez_de)
                         pygame.display.flip()
                     elif botao_cor_preto_rect.collidepoint(event.pos) and minhas_pecas != "vermelho":
                         minhas_pecas = "preto"
                         cliente.set_minhas_pecas("preto")
+                        server.set_pegou_preto()
+                        server.adversario_escolha_cor(cliente.get_nome(), "vermelho")
+                        print(server.get_pegou_preto())
+                        esconde_botao_preto()
                         tabuleiro.desenha_tabuleiro(screen)
-                        print(vez_de)
                         message_display(150, 750, "JOGADOR PRETO ", 20, (0, 0, 0, 255))
                         pygame.display.flip()
                     elif botao_resetar_partida_rect.collidepoint(event.pos):

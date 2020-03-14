@@ -1,7 +1,6 @@
 import Pyro4
 import random
 
-
 def sorteio():
     numero_sorteado = random.randint(0, 100)
     if numero_sorteado > 50:
@@ -32,7 +31,19 @@ class Servidor():
         return self.pegou_vermelho
 
     def get_pegou_preto(self):
-        return self.pegou_vermelho
+        return self.pegou_preto
+
+    def set_pegou_vermelho(self):
+        if not self.pegou_vermelho:
+            self.pegou_vermelho = True
+        elif self.pegou_vermelho:
+            self.pegou_vermelho = False
+
+    def set_pegou_preto(self):
+        if not self.pegou_preto:
+            self.pegou_preto = True
+        elif self.pegou_preto:
+            self.pegou_preto = False
 
     def add_player(self, cliente):
         self.lista_players.append(cliente)
@@ -43,6 +54,15 @@ class Servidor():
         ns.remove(cliente.get_nome())
         self.lista_players.remove(cliente)
         print(self.lista_players)
+
+    def adversario_escolha_cor(self, remetente, cor_adversario):
+        print("entrei aqui1")
+        for player in self.lista_players:
+            nome = player.get_nome()
+            print("entrei aqui2")
+            if nome != remetente:
+                print("entrei aqui3")
+                player.escolheu_cor(cor_adversario)
 
     def adversario_adiciona_mensagem(self, mensagem, remetente):
         for player in self.lista_players:
