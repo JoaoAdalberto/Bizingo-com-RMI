@@ -58,6 +58,9 @@ class cliente():
     def troca_jogador(self):
         de_quem_e_a_vez()
 
+    def houve_desistencia(self, cor):
+        desistiu(cor)
+
     def atualiza_posicao_peca(self, x1, y1, x2, y2):
         atualiza_posicao_pecas(x1, y1, x2, y2)
 
@@ -69,6 +72,16 @@ class cliente():
             botao_cor_cinza_rect = botao_cor_cinza.desenha_botao(screen, 650, 680, 100, 50)
             pygame.display.flip()
 
+
+def desistiu(cor):
+    if cor == "vermelho":
+        screen.fill(cinza)
+        screen.blit(opretovenceu, (0, 0))
+        pygame.display.flip()
+    elif cor == "preto":
+        screen.fill(cinza)
+        screen.blit(overmelhovenceu, (0, 0))
+        pygame.display.flip()
 
 def de_quem_e_a_vez():
     global vez_de
@@ -210,7 +223,7 @@ def resetar_partida():
 
 
 def rodar():
-    global circulos, input_para_caixa_do_chat, minhas_pecas, vez_de, botao_resetar_partida_rect, botao_cor_cinza_rect, botao_esconde_texto_rect
+    global circulos, input_para_caixa_do_chat, minhas_pecas, vez_de, botao_resetar_partida_rect, botao_cor_cinza_rect, botao_esconde_texto_rect, ganhador
     done = False
     vez_de = server.get_vez_de()
     if vez_de == "preto":
@@ -278,9 +291,11 @@ def rodar():
                             ganhador = "preto"
                             screen.fill(cinza)
                             screen.blit(opretovenceu, (0, 0))
+                            server.adversario_ganhou_partida_desistencia(cliente.get_nome(), "vermelho")
                             pygame.display.flip()
                         elif minhas_pecas == "preto":
                             ganhador = "vermelho"
+                            server.adversario_ganhou_partida_desistencia(cliente.get_nome(), "preto")
                             screen.fill(cinza)
                             screen.blit(overmelhovenceu, (0, 0))
                             pygame.display.flip()

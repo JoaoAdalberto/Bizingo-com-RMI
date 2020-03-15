@@ -28,6 +28,12 @@ class Servidor():
         elif self.vez_de == "vermelho":
             self.vez_de = "preto"
 
+    def adversario_ganhou_partida_desistencia(self, remetente, cor):
+        for player in self.lista_players:
+            nome = player.get_nome()
+            if nome != remetente:
+                player.houve_desistencia(cor)
+
     def adversario_resetar_partida(self, remetente):
         for player in self.lista_players:
             nome = player.get_nome()
