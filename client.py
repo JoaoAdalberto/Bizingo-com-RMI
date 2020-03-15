@@ -49,6 +49,9 @@ class cliente():
         if len(self.chat) == 12:
             self.chat.pop(0)
 
+    def reseta_partida(self):
+        resetar_partida()
+
     def atualiza_chat(self):
         enviar_mensagem()
 
@@ -80,6 +83,9 @@ def de_quem_e_a_vez():
 
 def atualiza_posicao_pecas(x1, y1, x2, y2):
     tabuleiro.muda_posicao_circulo(x1, y1, x2, y2)
+    tabuleiro.desenha_tabuleiro(screen)
+    tabuleiro.verifica_se_peca_foi_comida(x2, y2)
+    tabuleiro.verifica_se_tem_ganhador()
     tabuleiro.desenha_tabuleiro(screen)
     pygame.display.flip()
 
@@ -179,6 +185,7 @@ def sorteio():
 
 
 def esconde_botao_vermelho():
+    global botao_cor_cinza_rect, botao_esconde_texto_rect, botao_resetar_partida_rect
     botao_cor_cinza_rect = botao_cor_cinza.desenha_botao(screen, 650, 680, 100, 50)
     botao_cor_cinza_rect = botao_cor_cinza.desenha_botao(screen, 850, 680, 100, 50)
     pygame.display.flip()
@@ -187,6 +194,7 @@ def esconde_botao_vermelho():
 
 
 def esconde_botao_preto():
+    global botao_cor_cinza_rect, botao_esconde_texto_rect, botao_resetar_partida_rect
     botao_cor_cinza_rect = botao_cor_cinza.desenha_botao(screen, 850, 680, 100, 50)
     botao_cor_cinza_rect = botao_cor_cinza.desenha_botao(screen, 650, 680, 100, 50)
     botao_esconde_texto_rect = botao_esconde_texto.desenha_botao(screen, 500, 600, 500, 200)
@@ -244,6 +252,7 @@ def rodar():
                         pygame.display.flip()
                     elif botao_resetar_partida_rect.collidepoint(event.pos):
                         resetar_partida()
+                        server.adversario_resetar_partida(cliente.get_nome())
                     elif texto_entrada.get_input_text_rect().collidepoint(event.pos):
                         texto_entrada.handle_event(event)
                     elif send_message_button_rect.collidepoint(event.pos):
@@ -306,8 +315,7 @@ def rodar():
                             y_desejado = position_mouse[1]
                             x_da_peca, y_da_peca = circulos[0].get_x_y()
                             tabuleiro.muda_posicao_circulo(x_da_peca, y_da_peca, x_desejada, y_desejado)
-                            server.adversario_muda_posicao_circulo(cliente.get_nome(), x_da_peca, y_da_peca, x_desejada,
-                                                                   y_desejado)
+                            server.adversario_muda_posicao_circulo(cliente.get_nome(), x_da_peca, y_da_peca, x_desejada,y_desejado)
                             tabuleiro.desenha_tabuleiro(screen)
                             pygame.display.flip()
                             tabuleiro.verifica_se_peca_foi_comida(x_desejada, y_desejado)

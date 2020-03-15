@@ -28,6 +28,12 @@ class Servidor():
         elif self.vez_de == "vermelho":
             self.vez_de = "preto"
 
+    def adversario_resetar_partida(self, remetente):
+        for player in self.lista_players:
+            nome = player.get_nome()
+            if nome != remetente:
+                player.reseta_partida()
+
     def adversario_troca_jogador(self, remetente):
         for player in self.lista_players:
             nome = player.get_nome()
