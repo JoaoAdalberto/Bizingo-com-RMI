@@ -1,5 +1,5 @@
 # Bizingo-com-RMI
-Jogo bizinho utilizando RMI
+Jogo bizingo utilizando RMI
 Necessário ter instalado o pyro4 e o pygame.
 
 1 - Rodar nameserverpyro
