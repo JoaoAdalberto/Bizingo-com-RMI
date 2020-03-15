@@ -55,8 +55,10 @@ class cliente():
     def troca_jogador(self):
         de_quem_e_a_vez()
 
-    def escolheu_cor(self, cor):
+    def atualiza_posicao_peca(self, x1, y1, x2, y2):
+        atualiza_posicao_pecas(x1, y1, x2, y2)
 
+    def escolheu_cor(self, cor):
         if cor == "vermelho":
             botao_cor_cinza_rect = botao_cor_cinza.desenha_botao(screen, 850, 680, 100, 50)
             pygame.display.flip()
@@ -75,7 +77,13 @@ def de_quem_e_a_vez():
         pygame.draw.circle(screen, vermelho, (175, 25), 15)
         pygame.display.flip()
 
-        
+
+def atualiza_posicao_pecas(x1, y1, x2, y2):
+    tabuleiro.muda_posicao_circulo(x1, y1, x2, y2)
+    tabuleiro.desenha_tabuleiro(screen)
+    pygame.display.flip()
+
+
 def text_objects(text, font, cor):
     textSurface = font.render(text, True, cor)
     return textSurface, textSurface.get_rect()
@@ -196,9 +204,6 @@ def resetar_partida():
 def rodar():
     global circulos, input_para_caixa_do_chat, minhas_pecas, vez_de, botao_resetar_partida_rect, botao_cor_cinza_rect, botao_esconde_texto_rect
     done = False
-    bloqueia_cor = True
-    pegouvermelho = False
-    pegoupreto = False
     vez_de = server.get_vez_de()
     if vez_de == "preto":
         pygame.draw.circle(screen, preto, (175, 25), 15)
@@ -210,16 +215,6 @@ def rodar():
                 caixa_chat.atualiza_tela_chatarray()
             except:
                 pass
-            if not bloqueia_cor:
-                if event.type == pygame.MOUSEMOTION:
-                    if server.get_pegou_vermelho:
-                        esconde_botao_vermelho()
-                        bloqueia_cor = True
-                        pegouvermelho = False
-                    elif server.get_pegou_preto and pegoupreto:
-                        esconde_botao_preto()
-                        pegoupreto = False
-                        bloqueia_cor = True
             if event.type == pygame.QUIT:  # If user clicked close
                 done = True
                 server.del_player(cliente)
@@ -295,6 +290,8 @@ def rodar():
                             y_desejado = position_mouse[1]
                             x_da_peca, y_da_peca = circulos[0].get_x_y()
                             tabuleiro.muda_posicao_circulo(x_da_peca, y_da_peca, x_desejada, y_desejado)
+                            server.adversario_muda_posicao_circulo(cliente.get_nome(), x_da_peca, y_da_peca, x_desejada,
+                                                                   y_desejado)
                             tabuleiro.desenha_tabuleiro(screen)
                             pygame.display.flip()
                             tabuleiro.verifica_se_peca_foi_comida(x_desejada, y_desejado)
@@ -309,6 +306,8 @@ def rodar():
                             y_desejado = position_mouse[1]
                             x_da_peca, y_da_peca = circulos[0].get_x_y()
                             tabuleiro.muda_posicao_circulo(x_da_peca, y_da_peca, x_desejada, y_desejado)
+                            server.adversario_muda_posicao_circulo(cliente.get_nome(), x_da_peca, y_da_peca, x_desejada,
+                                                                   y_desejado)
                             tabuleiro.desenha_tabuleiro(screen)
                             pygame.display.flip()
                             tabuleiro.verifica_se_peca_foi_comida(x_desejada, y_desejado)

@@ -1,6 +1,7 @@
 import Pyro4
 import random
 
+
 def sorteio():
     numero_sorteado = random.randint(0, 100)
     if numero_sorteado > 50:
@@ -32,6 +33,11 @@ class Servidor():
             nome = player.get_nome()
             if nome != remetente:
                 player.troca_jogador()
+
+    def adversario_muda_posicao_circulo(self, remetente, x1, y1, x2, y2):
+        for player in self.lista_players:
+            if player.get_nome() != remetente:
+                player.atualiza_posicao_peca(x1, y1, x2, y2)
 
     def adversario_escolha_cor(self, remetente, cor_adversario):
         for player in self.lista_players:
@@ -66,7 +72,6 @@ class Servidor():
         ns.remove(cliente.get_nome())
         self.lista_players.remove(cliente)
         print(self.lista_players)
-
 
     def adversario_adiciona_mensagem(self, mensagem, remetente):
         for player in self.lista_players:
