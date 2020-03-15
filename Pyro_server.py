@@ -22,10 +22,22 @@ class Servidor():
         return self.vez_de
 
     def troca_jogador(self):
-        if self.vez_de == "vermelho":
-            self.vez_de = "preto"
-        elif self.vez_de == "preto":
+        if self.vez_de == "preto":
             self.vez_de = "vermelho"
+        elif self.vez_de == "vermelho":
+            self.vez_de = "preto"
+
+    def adversario_troca_jogador(self, remetente):
+        for player in self.lista_players:
+            nome = player.get_nome()
+            if nome != remetente:
+                player.troca_jogador()
+
+    def adversario_escolha_cor(self, remetente, cor_adversario):
+        for player in self.lista_players:
+            nome = player.get_nome()
+            if nome != remetente:
+                player.escolheu_cor(cor_adversario)
 
     def get_pegou_vermelho(self):
         return self.pegou_vermelho
@@ -55,14 +67,6 @@ class Servidor():
         self.lista_players.remove(cliente)
         print(self.lista_players)
 
-    def adversario_escolha_cor(self, remetente, cor_adversario):
-        print("entrei aqui1")
-        for player in self.lista_players:
-            nome = player.get_nome()
-            print("entrei aqui2")
-            if nome != remetente:
-                print("entrei aqui3")
-                player.escolheu_cor(cor_adversario)
 
     def adversario_adiciona_mensagem(self, mensagem, remetente):
         for player in self.lista_players:

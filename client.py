@@ -52,20 +52,30 @@ class cliente():
     def atualiza_chat(self):
         enviar_mensagem()
 
+    def troca_jogador(self):
+        de_quem_e_a_vez()
+
     def escolheu_cor(self, cor):
-        print("entreiaqui4")
-        print(cor + "alo")
+
         if cor == "vermelho":
-            print("SouPreto, Escondo botao vermelho")
             botao_cor_cinza_rect = botao_cor_cinza.desenha_botao(screen, 850, 680, 100, 50)
             pygame.display.flip()
         elif cor == "preto":
-            print("SouVermelho, Escondo botao Preto")
             botao_cor_cinza_rect = botao_cor_cinza.desenha_botao(screen, 650, 680, 100, 50)
             pygame.display.flip()
 
 
+def de_quem_e_a_vez():
+    global vez_de
+    vez_de = server.get_vez_de()
+    if vez_de == "preto":
+        pygame.draw.circle(screen, preto, (175, 25), 15)
+        pygame.display.flip()
+    elif vez_de == "vermelho":
+        pygame.draw.circle(screen, vermelho, (175, 25), 15)
+        pygame.display.flip()
 
+        
 def text_objects(text, font, cor):
     textSurface = font.render(text, True, cor)
     return textSurface, textSurface.get_rect()
@@ -152,7 +162,6 @@ def enviar_mensagem():
 
 
 def acao(message):
-    print(message)
     return message.split()[0]
 
 
@@ -204,12 +213,10 @@ def rodar():
             if not bloqueia_cor:
                 if event.type == pygame.MOUSEMOTION:
                     if server.get_pegou_vermelho:
-                        print("Peguei vermelho buceta")
                         esconde_botao_vermelho()
                         bloqueia_cor = True
                         pegouvermelho = False
                     elif server.get_pegou_preto and pegoupreto:
-                        print("Peguei preto buceta")
                         esconde_botao_preto()
                         pegoupreto = False
                         bloqueia_cor = True
@@ -227,7 +234,6 @@ def rodar():
                         cliente.set_minhas_pecas("vermelho")
                         server.set_pegou_vermelho()
                         server.adversario_escolha_cor(cliente.get_nome(), "preto")
-                        print(server.get_pegou_vermelho())
                         esconde_botao_vermelho()
                         message_display(150, 750, "JOGADOR VERMELHO ", 20, (255, 0, 0, 255))
                         tabuleiro.desenha_tabuleiro(screen)
@@ -237,7 +243,6 @@ def rodar():
                         cliente.set_minhas_pecas("preto")
                         server.set_pegou_preto()
                         server.adversario_escolha_cor(cliente.get_nome(), "vermelho")
-                        print(server.get_pegou_preto())
                         esconde_botao_preto()
                         tabuleiro.desenha_tabuleiro(screen)
                         message_display(150, 750, "JOGADOR PRETO ", 20, (0, 0, 0, 255))
@@ -248,7 +253,6 @@ def rodar():
                         texto_entrada.handle_event(event)
                     elif send_message_button_rect.collidepoint(event.pos):
                         cliente.add_chat(input_para_caixa_do_chat, cliente.get_nome())
-                        print("i did it")
                         server.adversario_adiciona_mensagem(input_para_caixa_do_chat, cliente.get_nome())
                         input_para_caixa_do_chat = ""
                         enviar_mensagem()
@@ -256,9 +260,13 @@ def rodar():
                         if vez_de == "vermelho" and minhas_pecas == "vermelho":
                             vez_de = "preto"
                             pygame.draw.circle(screen, preto, (175, 25), 15)
+                            server.troca_jogador()
+                            server.adversario_troca_jogador(cliente.get_nome())
                             pygame.display.flip()
                         elif vez_de == "preto" and minhas_pecas == "preto":
                             vez_de = "vermelho"
+                            server.troca_jogador()
+                            server.adversario_troca_jogador(cliente.get_nome())
                             pygame.draw.circle(screen, vermelho, (175, 25), 15)
                             pygame.display.flip()
                     elif botao_desistir_rect.collidepoint(event.pos):
